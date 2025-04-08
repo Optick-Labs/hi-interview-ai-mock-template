@@ -12,8 +12,8 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/hi-interview-t3.git
-cd hi-interview-t3
+git clone https://github.com/Optick-Labs/hi-interview-template.git
+cd hi-interview-template
 ```
 
 2. Install dependencies
