@@ -1,4 +1,8 @@
 import { behavioralRouter } from "~/server/api/routers/behavioral";
+import { companyRouter } from "~/server/api/routers/company";
+import { interviewRouter } from "~/server/api/routers/interview";
+import { conversationRouter } from "~/server/api/routers/conversation";
+import { evaluationRouter } from "~/server/api/routers/evaluation";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -8,6 +12,10 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   behavioral: behavioralRouter,
+  companies: companyRouter,
+  interviews: interviewRouter,
+  conversations: conversationRouter,
+  evaluations: evaluationRouter,
 });
 
 // export type definition of API

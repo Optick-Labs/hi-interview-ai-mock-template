@@ -13,23 +13,6 @@ export const behavioralRouter = createTRPCRouter({
       };
     }),
 
-  createDummy: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.dummy.create({
-        data: {
-          name: input.name,
-        },
-      });
-    }),
-
-  getLatestDummy: publicProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.dummy.findFirst({
-      orderBy: { createdAt: "desc" },
-    });
-
-    return post ?? null;
-  }),
 
   aiTest: publicProcedure
     .input(z.object({ country: z.string() }))
