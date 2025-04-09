@@ -1,19 +1,8 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import OpenAI from "openai";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-
-// Define the expected structure of the OpenAI API response
-interface OpenAIChoice {
-  message: {
-    role: string;
-    content: string;
-  };
-}
-
-interface OpenAIResponse {
-  choices: OpenAIChoice[];
-}
 
 export const behavioralRouter = createTRPCRouter({
   hello: publicProcedure
@@ -54,33 +43,17 @@ export const behavioralRouter = createTRPCRouter({
       }
 
       try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: `What is the capital of ${input.country}?` }],
-          }),
+        const openai = new OpenAI({ apiKey });
+
+        const completion = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: `What is the capital of ${input.country}?` }],
         });
 
-        if (!response.ok) {
-          const errorBody = await response.text();
-          console.error("OpenAI API Error:", response.status, errorBody);
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: `OpenAI API request failed: ${response.statusText}`,
-          });
-        }
-
-        const data = await response.json() as OpenAIResponse;
-
-        const aiMessage = data.choices?.[0]?.message?.content?.trim();
+        const aiMessage = completion.choices[0]?.message?.content?.trim();
 
         if (!aiMessage) {
-          console.error("Invalid OpenAI response structure:", data);
+          console.error("Invalid OpenAI response structure:", completion);
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: "Failed to parse AI response.",
